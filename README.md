@@ -180,7 +180,7 @@ Useful options:
 | `--session <id>` | Report a specific session. |
 | `--open` | Open the report after writing it. |
 | `--dry-run` | Show what would run without invoking the analyzer. |
-| `--analyzer <auto|claude|codex>` | Choose the analyzer CLI. |
+| `--analyzer <auto/claude/codex>` | Choose the analyzer CLI. |
 | `--model <name>` | Pass a model to the analyzer invocation. |
 | `--classifier <command>` | Use a fully custom analyzer command. |
 
