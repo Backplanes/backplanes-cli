@@ -4,7 +4,7 @@
 
 <h1 align="center">Backplanes CLI</h1>
 
-Turn long agent sessions into clear, local HTML reports.
+Turn long Claude Code and Codex sessions into clear, local HTML reports.
 
 Backplanes CLI reads your agent transcript, asks an analyzer to summarize what
 happened, and renders a report you can inspect, share, or use during review. It
@@ -27,8 +27,23 @@ is designed for engineers who want a fast answer to:
 
 ## Recent Changes
 
-- **Codex support:** Backplanes can now discover Codex sessions, read Codex
-  transcripts, estimate Codex/OpenAI usage, and generate reports with either
+### v0.4.1
+
+- **Report-first workflow:** `backplanes reports create --latest` creates a
+  report for the newest matching session, while `backplanes reports list` opens
+  an interactive report browser for the reports you have already generated.
+- **Parallel report creation TUI:** `backplanes reports create` can generate
+  reports for many sessions at once, shows each row as it moves from pending to
+  creating to complete, and keeps the review screen open when the batch
+  finishes.
+- **Update notices:** interactive CLI invocations periodically check for a newer
+  release and print a non-blocking hint to run `backplanes update` when one is
+  available.
+
+### v0.4.0
+
+- **Codex support:** Backplanes discovers Codex sessions, reads Codex
+  transcripts, estimates Codex/OpenAI usage, and generates reports with either
   Claude or Codex as the analyzer.
 - **Interactive session browser:** `backplanes sessions` opens a Ratatui TUI for
   browsing Claude and Codex sessions together, filtering by report status,
@@ -69,19 +84,25 @@ backplanes update --check
 From a project where you have Claude Code or Codex sessions:
 
 ```sh
-backplanes report
+backplanes reports create --latest
 ```
 
-Open the report as soon as it is written:
+Open the newest existing report later:
 
 ```sh
-backplanes report --open
+backplanes reports list --latest
 ```
 
-Preview what Backplanes would analyze without invoking the analyzer:
+Generate reports for every discovered Claude session:
 
 ```sh
-backplanes report --dry-run
+backplanes reports create
+```
+
+Limit report creation to the current project:
+
+```sh
+backplanes reports create --project
 ```
 
 ## What You Get
@@ -108,18 +129,18 @@ keeps the full transcript details visible in the side panel.
 ### Report the current or latest session
 
 ```sh
-backplanes report
-backplanes report --open
+backplanes reports create --latest
+backplanes reports create --latest --project
 ```
 
-Use this when you are already in the project directory and want the most likely
-current session.
+Use this when you want the fastest path from a recent agent session to a local
+HTML report.
 
 ### Report a specific session
 
 ```sh
-backplanes report --session <session-id>
-backplanes report --session <session-id> --open
+backplanes sessions report --session <session-id>
+backplanes sessions report --session <session-id> --open
 ```
 
 ### Browse sessions before reporting
@@ -143,75 +164,69 @@ backplanes sessions list --provider codex
 backplanes sessions report --session <session-id>
 ```
 
-### Batch report recent sessions
+### Create reports from a set of sessions
 
 ```sh
-backplanes sessions report --all --project-only --days 7
+backplanes reports create --days 7
+backplanes reports create --days 7 --project
+backplanes reports create --all --harness all
 ```
 
-Use `--dry-run` first if you want to see the scope before spending analyzer
-tokens:
+When the selection is larger than five sessions, Backplanes asks for
+confirmation before spending analyzer tokens. Use `--dry-run` first if you want
+to see the scope without running analyzers:
 
 ```sh
-backplanes sessions report --all --project-only --days 7 --dry-run
+backplanes reports create --days 7 --project --dry-run
 ```
 
 ### Open an existing report
 
 ```sh
-backplanes report list
-backplanes report open
-backplanes report open <session-id>
+backplanes reports list
+backplanes reports list --latest
+backplanes reports list --project
 ```
 
-`report list` opens an interactive picker in a terminal. In scripts or pipes, it
-prints report rows instead:
-
-```sh
-backplanes report list --limit 5 | cat
-```
+`reports list` opens an interactive report browser in a terminal. Use the arrow
+keys or `j`/`k` to move through reports and press `o` to open the selected HTML
+report.
 
 ### Use a specific analyzer or model
 
 ```sh
-backplanes report --provider codex --analyzer codex
-backplanes report --analyzer claude --model claude-opus-4-1
-backplanes report --analyzer codex --model gpt-5.2
+backplanes reports create --latest --harness codex --analyzer codex
+backplanes reports create --latest --analyzer claude --model claude-opus-4-1
+backplanes reports create --latest --analyzer codex --model gpt-5.2
 ```
-
-### Use a custom analyzer command
-
-```sh
-backplanes report --classifier "claude -p --no-session-persistence"
-```
-
-Use this when you want full control over the command that produces findings
-JSON.
 
 ## Command Reference
 
-### `backplanes report`
+### `backplanes reports`
 
-Create, list, and open reports.
+Create and browse reports.
 
 ```sh
-backplanes report
-backplanes report latest
-backplanes report from-transcript /path/to/session.jsonl
-backplanes report list
-backplanes report open
+backplanes reports create --latest
+backplanes reports create --days 2 --project
+backplanes reports create --all --harness all
+backplanes reports list
+backplanes reports list --latest
 ```
 
 Useful options:
 
 | Option | Description |
 | --- | --- |
-| `--session <id>` | Report a specific session. |
-| `--open` | Open the report after writing it. |
+| `--latest` | Select the newest matching session. |
+| `--days <n>` | Select sessions modified in the last `n` days. |
+| `--all` | Select all matching sessions. This is the default for `reports create` and `reports list`. |
+| `--project` | Limit discovery to the current project. |
+| `--harness <all|claude|codex>` | Choose which harness transcripts to discover. |
+| `--jobs <n>` | Maximum reports to create concurrently. |
 | `--dry-run` | Show what would run without invoking the analyzer. |
-| `--analyzer <auto/claude/codex>` | Choose the analyzer CLI. |
+| `--analyzer <auto|claude|codex>` | Choose the analyzer CLI. |
 | `--model <name>` | Pass a model to the analyzer invocation. |
-| `--classifier <command>` | Use a fully custom analyzer command. |
 
 ### `backplanes sessions`
 
@@ -245,14 +260,18 @@ backplanes update
 backplanes update --check
 ```
 
+Backplanes also checks periodically during interactive CLI usage and prints a
+short notice when a newer release is available. The notice is informational; run
+`backplanes update` when you are ready.
+
 ## Tips
 
-- Start with `backplanes report --dry-run` if you are unsure which transcript
-  will be analyzed.
+- Start with `backplanes reports create --latest --dry-run` if you are unsure
+  which transcript will be analyzed.
 - Use `backplanes sessions list --project-only --days 7` to narrow a busy
   session history.
 - Run `backplanes sessions` when you want to inspect Claude and Codex sessions
   visually before creating or opening a report.
-- Use `backplanes report list` to reopen previous reports by title.
+- Use `backplanes reports list` to reopen previous reports by title.
 - Pass `--model` when you want to pin a specific analyzer model for consistency.
 - Run `backplanes <command> --help` for the complete options for any command.
