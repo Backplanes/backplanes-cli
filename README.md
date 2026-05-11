@@ -27,6 +27,14 @@ is designed for engineers who want a fast answer to:
 
 ## Recent Changes
 
+### v0.5.0
+
+- **Report feedback widget:** generated reports now include an in-report
+  feedback widget so you can send feedback from the report you are reviewing.
+- **Clearer legal and telemetry terms:** install and CLI surfaces now state the
+  EULA, Terms, Privacy Policy, local-first data posture, and opt-in telemetry
+  controls more explicitly.
+
 ### v0.4.1
 
 - **Report-first workflow:** `backplanes reports create --latest` creates a
@@ -188,7 +196,7 @@ report.
 ```sh
 backplanes reports create --latest --harness codex --analyzer codex
 backplanes reports create --latest --analyzer claude --model claude-opus-4-1
-backplanes reports create --latest --analyzer codex --model gpt-5.2
+backplanes reports create --latest --analyzer codex --model gpt-5.5
 ```
 
 ## Command Reference
