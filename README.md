@@ -45,10 +45,10 @@ is designed for engineers who want a fast answer to:
 - **Codex support:** Backplanes discovers Codex sessions, reads Codex
   transcripts, estimates Codex/OpenAI usage, and generates reports with either
   Claude or Codex as the analyzer.
-- **Interactive session browser:** `backplanes sessions` opens a Ratatui TUI for
-  browsing Claude and Codex sessions together, filtering by report status,
-  sorting columns, creating reports in the background, and opening existing
-  reports.
+- **Interactive session browser:** `backplanes sessions list` opens a Ratatui
+  TUI for browsing Claude and Codex sessions together, filtering by report
+  status, sorting columns, creating reports in the background, and opening
+  existing reports.
 
 ![Backplanes session browser TUI](assets/tui.png)
 
@@ -120,9 +120,9 @@ Backplanes is intentionally local-first: reports are written on your machine and
 can be opened in your browser.
 
 The session browser TUI is for human review. It color-codes rows by report
-state, shows the harness (`Claude` or `Codex`), keeps subagent counts and
-session size aligned, abbreviates long session ids as `first4...last4`, and
-keeps the full transcript details visible in the side panel.
+state, shows the harness (`Claude` or `Codex`), keeps session size aligned,
+abbreviates long session ids as `first4...last4`, and keeps the full transcript
+details visible in the side panel.
 
 ## Common Workflows
 
@@ -136,32 +136,23 @@ backplanes reports create --latest --project
 Use this when you want the fastest path from a recent agent session to a local
 HTML report.
 
-### Report a specific session
-
-```sh
-backplanes sessions report --session <session-id>
-backplanes sessions report --session <session-id> --open
-```
-
 ### Browse sessions before reporting
 
 ```sh
-backplanes sessions
+backplanes sessions list
 ```
 
-`sessions` opens the interactive browser. Use `j`/`k` or the arrow keys to move,
-`/` to filter, `Tab` to cycle report status filters, and `d`/`s`/`h`/`a`/`i`/`p`
-to sort by date, size, harness, subagents, id, and project. Press `Enter` or
-`n` to create a report in the background, `o` to open a report, `r` to refresh,
-and `q` to quit.
+`sessions list` opens the interactive browser. Use `j`/`k` or the arrow keys to
+move, `/` to filter, `Tab` to cycle report status filters, and
+`d`/`s`/`h`/`i`/`p` to sort by date, size, harness, id, and project. Press
+`Enter` or `n` to create a report in the background, `o` to open a report, `r`
+to refresh, and `q` to quit.
 
-For scripts and pipes, use the non-interactive commands:
+For scoped browsing, pass discovery filters to `sessions list`:
 
 ```sh
 backplanes sessions list
 backplanes sessions list --project-only --days 7
-backplanes sessions list --provider codex
-backplanes sessions report --session <session-id>
 ```
 
 ### Create reports from a set of sessions
@@ -233,11 +224,9 @@ Useful options:
 Find sessions you can report on.
 
 ```sh
-backplanes sessions
 backplanes sessions list
-backplanes sessions browse
-backplanes sessions report
-backplanes sessions report --all
+backplanes sessions list --project-only --days 7
+backplanes sessions list --project /path/to/project --days 30
 ```
 
 Useful options:
@@ -246,10 +235,7 @@ Useful options:
 | --- | --- |
 | `--project-only` | Limit results to the current project. |
 | `--project <dir>` | Limit results to an explicit project directory. |
-| `--provider <auto|claude|codex>` | Choose which harness transcripts to discover. |
 | `--days <n>` | Only include sessions modified in the last `n` days. |
-| `--limit <n>` | Limit printed session rows. |
-| `--all` | Generate reports for every discovered session. |
 
 ### `backplanes update`
 
@@ -270,8 +256,8 @@ short notice when a newer release is available. The notice is informational; run
   which transcript will be analyzed.
 - Use `backplanes sessions list --project-only --days 7` to narrow a busy
   session history.
-- Run `backplanes sessions` when you want to inspect Claude and Codex sessions
-  visually before creating or opening a report.
+- Run `backplanes sessions list` when you want to inspect Claude and Codex
+  sessions visually before creating or opening a report.
 - Use `backplanes reports list` to reopen previous reports by title.
 - Pass `--model` when you want to pin a specific analyzer model for consistency.
 - Run `backplanes <command> --help` for the complete options for any command.
