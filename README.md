@@ -27,6 +27,10 @@ is designed for engineers who want a fast answer to:
 
 ## Recent Changes
 
+### v0.5.1
+
+- **Windows x86 + ARM64 binaries:** there are now binaries for Windows
+  
 ### v0.5.0
 
 - **Report feedback widget:** generated reports now include an in-report
