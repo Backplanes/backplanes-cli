@@ -27,6 +27,15 @@ is designed for engineers who want a fast answer to:
 
 ## Recent Changes
 
+### v0.5.2
+
+- **Observed session posture:** reports now summarize the agents, skills, MCP
+  servers, external domains, and outside-project file access observed during the
+  session.
+- **Richer egress reporting:** Web fetch/search activity now contributes
+  contacted domains to the Data Egress section when URLs are present in the
+  transcript.
+
 ### v0.5.0
 
 - **Report feedback widget:** generated reports now include an in-report
