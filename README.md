@@ -27,6 +27,19 @@ is designed for engineers who want a fast answer to:
 
 ## Recent Changes
 
+### v0.6.0
+
+- **Bring your own key:** Backplanes can now store local analyzer
+  configurations for OpenAI and Anthropic API keys, plus local model endpoints.
+- **Local model support:** configure a local provider URL and choose the local
+  models you want available for report generation.
+- **Model choice across harnesses:** pick any configured model to analyze any
+  Claude Code or Codex session, so a Claude session can be reviewed by an
+  OpenAI/local model and a Codex session can be reviewed by Anthropic/local.
+- **Anthropic subscription change:** removed the old `claude -p` analysis path
+  because Anthropic's Terms of Service no longer allow subscription auth for
+  this kind of headless automation. Anthropic analysis now requires an API key.
+
 ### v0.5.2
 
 - **Observed session posture:** reports now summarize the agents, skills, MCP
