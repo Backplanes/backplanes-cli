@@ -27,6 +27,16 @@ is designed for engineers who want a fast answer to:
 
 ## Recent Changes
 
+### v0.6.2
+
+- **Smarter File Blast Radius:** reports now keep long File Blast Radius lists
+  collapsed by default while still showing `outside` and `unknown` counts at a
+  glance.
+- **Better project-boundary detection:** Backplanes avoids anchoring reports on
+  Claude/Codex harness mirror directories, prefers repository roots over nested
+  package markers in monorepos, and can infer the real project root from
+  observed file access when the transcript cwd is not the repo itself.
+
 ### v0.6.1
 
 - **Alternate Claude config directories:** pass `--claude-config-dir <DIR>` to
@@ -171,6 +181,8 @@ Each report is a local HTML file with:
 - Informational findings that are not treated as errors.
 - Evidence and commands tied back to transcript activity.
 - Engineering analytics for review, delivery, and operational context.
+- A collapsible File Blast Radius section that separates outside-project file
+  access from paths whose project boundary could not be determined.
 - A one-line title so prior reports are easy to browse later.
 
 Backplanes is intentionally local-first: reports are written on your machine and
@@ -333,4 +345,6 @@ short notice when a newer release is available. The notice is informational; run
   sessions visually before creating or opening a report.
 - Use `backplanes reports list` to reopen previous reports by title.
 - Pass `--model` when you want to pin a specific analyzer model for consistency.
+- Expand File Blast Radius in a report when you need the full path list; the
+  collapsed heading already shows outside-project and unknown-boundary counts.
 - Run `backplanes <command> --help` for the complete options for any command.
