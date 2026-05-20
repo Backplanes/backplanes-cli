@@ -27,6 +27,12 @@ is designed for engineers who want a fast answer to:
 
 ## Recent Changes
 
+### v0.6.1
+
+- **Alternate Claude config directories:** pass `--claude-config-dir <DIR>` to
+  read Claude Code transcripts from a different config root for that run, such
+  as `~/.claude-work` or `~/.claude-personal`.
+
 ### v0.6.0
 
 - **Bring your own key:** Backplanes can now store local analyzer
@@ -52,7 +58,7 @@ is designed for engineers who want a fast answer to:
 ### v0.5.1
 
 - **Windows x86 + ARM64 binaries:** there are now binaries for Windows
-  
+
 ### v0.5.0
 
 - **Report feedback widget:** generated reports now include an in-report
@@ -101,6 +107,18 @@ backplanes --version
 backplanes --help
 ```
 
+First-time setup:
+
+```sh
+backplanes config
+```
+
+Use `backplanes config` to add at least one analyzer provider and choose the
+model Backplanes should use for reports. Reports require a configured model
+before `backplanes reports create` can run. The config TUI supports OpenAI and
+Anthropic API keys, local model endpoints, and configured Codex subscription
+entries.
+
 Update later:
 
 ```sh
@@ -118,8 +136,13 @@ backplanes update --check
 From a project where you have Claude Code or Codex sessions:
 
 ```sh
+backplanes config
 backplanes reports create --latest
 ```
+
+Run `backplanes config` once after install to choose the analyzer model for
+report generation. After that, normal report commands use the configured
+default unless you pass `--model`.
 
 Open the newest existing report later:
 
@@ -187,7 +210,21 @@ For scoped browsing, pass discovery filters to `sessions list`:
 ```sh
 backplanes sessions list
 backplanes sessions list --project-only --days 7
+backplanes sessions list --claude-config-dir ~/.claude-work
 ```
+
+### Use a separate Claude config root
+
+If you keep separate Claude Code homes, point Backplanes at the one you want to
+inspect for that run:
+
+```sh
+backplanes sessions list --claude-config-dir ~/.claude-work
+backplanes reports create --latest --claude-config-dir ~/.claude-personal
+```
+
+Backplanes reads Claude transcripts from `<dir>/projects`, leaving your default
+`~/.claude` untouched.
 
 ### Create reports from a set of sessions
 
@@ -252,6 +289,7 @@ Useful options:
 | `--dry-run` | Show what would run without invoking the analyzer. |
 | `--analyzer <auto|claude|codex>` | Choose the analyzer CLI. |
 | `--model <name>` | Pass a model to the analyzer invocation. |
+| `--claude-config-dir <dir>` | Read Claude Code transcripts from `<dir>/projects` for this run. |
 
 ### `backplanes sessions`
 
@@ -270,6 +308,7 @@ Useful options:
 | `--project-only` | Limit results to the current project. |
 | `--project <dir>` | Limit results to an explicit project directory. |
 | `--days <n>` | Only include sessions modified in the last `n` days. |
+| `--claude-config-dir <dir>` | Read Claude Code transcripts from `<dir>/projects` for this run. |
 
 ### `backplanes update`
 
