@@ -27,6 +27,15 @@ is designed for engineers who want a fast answer to:
 
 ## Recent Changes
 
+### v0.6.3
+
+- **Codex skill runtime detection:** reports now classify Codex runtime reads of
+  plugin and skill `SKILL.md` files, plus referenced skill scripts, as observed
+  skill activity in the session posture.
+- **Cleaner File Blast Radius:** Codex runtime skill reads are separated from
+  ordinary outside-project file access, so cached plugin skill manifests are
+  easier to review as workflow usage instead of report noise.
+
 ### v0.6.2
 
 - **Smarter File Blast Radius:** reports now keep long File Blast Radius lists
@@ -183,6 +192,8 @@ Each report is a local HTML file with:
 - Engineering analytics for review, delivery, and operational context.
 - A collapsible File Blast Radius section that separates outside-project file
   access from paths whose project boundary could not be determined.
+- Observed agent posture that distinguishes Codex runtime skills from ordinary
+  outside-project file access.
 - A one-line title so prior reports are easy to browse later.
 
 Backplanes is intentionally local-first: reports are written on your machine and
